@@ -8,7 +8,8 @@ import numpy as np
 
 # Step 1 - gini
 def gini(y):
-
+    # base case is needed if array is empty counts becomes 0 makes 
+    # gini to be 1.0 which is incorrect 
     if y.size == 0 :
         return 0.0
 
