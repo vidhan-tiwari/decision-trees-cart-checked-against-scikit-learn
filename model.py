@@ -207,8 +207,42 @@ def moons_data(n_samples=300, noise=0.25, random_state=42, test_size=0.3):
     X_train,X_test,y_train,y_test = train_test_split(Points,labels,test_size = test_size, random_state = random_state)
     return (X_train,X_test,y_train,y_test)
 
-# Step 9 - overfit_vs_regularized (not yet solved)
-# TODO: implement
+# Step 9 - overfit_vs_regularized
+def calculate_accuracy(y_true, y_pred): 
+    return float(np.mean(y_true == y_pred))
+
+def overfit_vs_regularized(X_train, X_test, y_train, y_test, min_samples_leaf=5):
+    
+    unrestricted_tree = fit_sklearn_tree(X_train, y_train, max_depth=None, min_samples_leaf=1)
+    reg_tree = fit_sklearn_tree(X_train, y_train, max_depth=None, min_samples_leaf=min_samples_leaf)
+
+    # predict on train and test sets
+    y_pred_train_unrestricted = unrestricted_tree.predict(X_train)
+    y_pred_test_unrestricted  = unrestricted_tree.predict(X_test)
+    y_pred_train_reg = reg_tree.predict(X_train)
+    y_pred_test_reg = reg_tree.predict(X_test)
+
+    # calculate accuracies using helper function
+    train_acc_unres = calculate_accuracy(y_train, y_pred_train_unrestricted)
+    test_acc_unres = calculate_accuracy(y_test, y_pred_test_unrestricted)
+    train_acc_reg = calculate_accuracy(y_train, y_pred_train_reg)
+    test_acc_reg = calculate_accuracy(y_test, y_pred_test_reg)
+
+    leaves_unres = int(unrestricted_tree.get_n_leaves())
+    leaves_reg = int(reg_tree.get_n_leaves())
+
+    return {
+        'free': {
+            'train_acc': train_acc_unres,
+            'test_acc': test_acc_unres,
+            'leaves': leaves_unres
+        },
+        'regularized': {
+            'train_acc': train_acc_reg,
+            'test_acc': test_acc_reg,
+            'leaves': leaves_reg
+        }
+    }
 
 # Step 10 - rotation_sensitivity (not yet solved)
 # TODO: implement
