@@ -72,8 +72,47 @@ def best_split(X, y, min_samples_leaf = 1):
                 best_t = t 
     return best_f, best_t , best_gain
 
-# Step 3 - grow_tree (not yet solved)
-# TODO: implement
+# Step 3 - grow_tree
+def grow_tree(X, y, max_depth=2, min_samples_leaf=1, depth=0):
+    n_samples, n_features = X.shape
+    
+    classes, counts = np.unique(y, return_counts = True)
+
+    # find out the majority class 
+    majority_class = int(classes[np.argmax(counts)])
+
+    # a tempplate for leaf_node 
+    leaf_node = {'leaf' : True, 'value': majority_class, 'n' : n_samples}
+
+    # if parent is pure i.e. paren_gini is 0.0 or the max_depth has been achieved return the leaf node
+    parent_gini = gini(y)
+
+    if parent_gini == 0.0 or depth >= max_depth:
+        return leaf_node
+
+    # now apply the best_split function.
+    best_f, best_t , best_gain = best_split(X, y, min_samples_leaf = min_samples_leaf)
+
+    # if gain was not updated(i.e. best_f , best_t remained None) return the current as leaf node 
+    if best_t == None: # indicated no improvement in gain 
+        return leaf_node
+    
+    # prepare left_mask and right_mask for best_t , best_f on X , y to make recursion
+    left_mask = X[:,best_f] <= best_t
+    right_mask = ~ left_mask
+
+    # recursive calls for left and right subtrees
+    left_subtree = grow_tree(X[left_mask], y[left_mask], max_depth , min_samples_leaf , depth + 1)
+    right_subtree = grow_tree(X[right_mask], y[right_mask], max_depth , min_samples_leaf, depth + 1)
+
+    return {
+        'leaf' : False,
+        'feature' : best_f,
+        'threshold' : best_t,
+        'n' : n_samples,
+        'left' : left_subtree,
+        'right' : right_subtree
+    }
 
 # Step 4 - predict_tree (not yet solved)
 # TODO: implement
