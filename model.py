@@ -166,8 +166,35 @@ def sklearn_splits(clf):
             
     return splits
 
-# Step 7 - compare_trees (not yet solved)
-# TODO: implement
+# Step 7 - compare_trees
+def compare_trees(X, y, max_depth=2):
+    
+    # fit both th trees
+    my_tree = grow_tree(X,y,max_depth = max_depth , min_samples_leaf = 1)
+    sk_tree = fit_sklearn_tree(X,y, max_depth = max_depth, min_samples_leaf = 1)
+
+    # splits extraction from my tree (recursively)
+    my_splits = []
+    def collect_splits(node):
+        if not node['leaf']:
+            my_splits.append((node['feature'], round(node['threshold'],3)))
+            collect_splits(node['left'])
+            collect_splits(node['right'])
+    
+    collect_splits(my_tree)
+    
+    sk_splits  = sklearn_splits(sk_tree)
+
+    my_preds = predict_tree(my_tree, X)
+    sk_preds = sk_tree.predict(X)
+
+    agreement = float(np.mean(my_preds == sk_preds))
+
+    return{
+        'same_splits' : my_splits == sk_splits,
+        'agreement' : agreement,
+        'my_splits' : my_splits
+    }
 
 # Step 8 - moons_data (not yet solved)
 # TODO: implement
