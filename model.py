@@ -114,8 +114,35 @@ def grow_tree(X, y, max_depth=2, min_samples_leaf=1, depth=0):
         'right' : right_subtree
     }
 
-# Step 4 - predict_tree (not yet solved)
-# TODO: implement
+# Step 4 - predict_tree
+def predict_tree(tree, X):
+    # TODO: walk the dict tree per row; return an int array of leaf values.
+    # a typical tree structure is : 
+    '''
+    {
+    'leaf' : False,
+    'feature' : best_f,
+    'threshold' : best_t,
+    'n' : n_samples,
+    'left' : left_subtree,
+    'right' : right_subtree
+    }
+    what to do with 'n' at prediction time?
+    '''
+    # loop - wise approach. 
+    # initialise an array of zeros that would be my answer 
+    labels = np.zeros(X.shape[0], dtype = int)
+    for i in range(X.shape[0]):
+        curr_node = tree
+        while not curr_node['leaf']:
+            f = curr_node['feature']
+            t = curr_node['threshold']
+            if X[i,f] <= t:
+                curr_node = curr_node['left']
+            else:
+                curr_node = curr_node['right']
+        labels[i] = curr_node['value']
+    return labels
 
 # Step 5 - fit_sklearn_tree (not yet solved)
 # TODO: implement
