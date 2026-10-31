@@ -19,7 +19,10 @@ def gini(y):
     return float(gini)
 
 # Step 2 - best_split
-def best_split(X, y):
+def best_split(X, y, min_samples_leaf = 1):
+    # adding the min_sample_leaf parameter as we need not to consider the split that 
+    # result in child with n_samples lower than min_sample_leaf no matter how pure that split becomes 
+   
     n_samples , n_features = X.shape
     parent_gini = gini(y)
 
@@ -51,6 +54,10 @@ def best_split(X, y):
             y_left = y[left_mask]
             y_right = y[right_mask]
 
+            # if this split results into a child having sample less than min_samples_leaf ignore the split 
+            if len(y_left) < min_samples_leaf or len(y_right) < min_samples_leaf:
+                continue
+                
             # calulate weighted gini of splits 
             w_gini_left = (len(y_left)/n_samples)*gini(y_left)
             w_gini_right = (len(y_right)/n_samples)*gini(y_right)
