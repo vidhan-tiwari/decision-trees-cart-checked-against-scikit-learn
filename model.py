@@ -244,8 +244,37 @@ def overfit_vs_regularized(X_train, X_test, y_train, y_test, min_samples_leaf=5)
         }
     }
 
-# Step 10 - rotation_sensitivity (not yet solved)
-# TODO: implement
+# Step 10 - rotation_sensitivity
+def rotation_sensitivity(X_train, X_test, y_train, y_test, degrees=45.0, min_samples_leaf=5):
+    # convert degrees to radians
+    theta = np.deg2rad(degrees)
+    cos_t, sin_t = np.cos(theta), np.sin(theta)
+    R = np.array([
+        [cos_t, -sin_t],
+        [sin_t,  cos_t]
+    ])
+
+    # 2. Rotate both training and testing feature matrices
+    X_train_rot = X_train @ R.T
+    X_test_rot = X_test @ R.T
+
+    # 3. Fit trees on original and rotated training data
+    orig_tree = fit_sklearn_tree(X_train, y_train, max_depth=None, min_samples_leaf=min_samples_leaf)
+    rot_tree = fit_sklearn_tree(X_train_rot, y_train, max_depth=None, min_samples_leaf=min_samples_leaf)
+
+    # 4. Evaluate test accuracies
+    orig_preds = orig_tree.predict(X_test)
+    rot_preds = rot_tree.predict(X_test_rot)
+
+    original_acc = float(np.mean(orig_preds == y_test))
+    rotated_acc = float(np.mean(rot_preds == y_test))
+    drop = round(original_acc - rotated_acc, 4)
+
+    return {
+        "original_acc": original_acc,
+        "rotated_acc": rotated_acc,
+        "drop": drop
+    }
 
 # Step 11 - regression_tree (not yet solved)
 # TODO: implement
