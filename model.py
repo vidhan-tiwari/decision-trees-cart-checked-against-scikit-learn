@@ -304,8 +304,12 @@ from sklearn.tree import export_text
 def tree_rules(clf, feature_names):
     return export_text(clf, feature_names = list(feature_names))
 
-# Step 13 - save_and_reload_tree (not yet solved)
-# TODO: implement
+# Step 13 - save_and_reload_tree
+import joblib
+def save_and_reload_tree(clf, path):
+    joblib.dump(clf,path)
+    reloaded_clf = joblib.load(path)
+    return reloaded_clf
 
 # Step 14 - predict_species (not yet solved)
 # TODO: implement
