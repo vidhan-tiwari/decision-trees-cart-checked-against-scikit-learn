@@ -311,6 +311,11 @@ def save_and_reload_tree(clf, path):
     reloaded_clf = joblib.load(path)
     return reloaded_clf
 
-# Step 14 - predict_species (not yet solved)
-# TODO: implement
+# Step 14 - predict_species
+def predict_species(clf, measurements, target_names):
+    # TODO: predict on the raw measurements and return class names as strings.
+    X = np.array(measurements)
+    y = clf.predict(X).tolist()
+    labels = [str(target_names[index]) for index in y]
+    return labels
 
