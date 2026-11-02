@@ -276,8 +276,27 @@ def rotation_sensitivity(X_train, X_test, y_train, y_test, degrees=45.0, min_sam
         "drop": drop
     }
 
-# Step 11 - regression_tree (not yet solved)
-# TODO: implement
+# Step 11 - regression_tree
+from sklearn.tree import DecisionTreeRegressor
+
+def regression_tree(X, y, max_depth=2, random_state=42):
+    
+    model = DecisionTreeRegressor(max_depth = max_depth , random_state = random_state)
+    model.fit(X,y)
+
+    y_pred = model.predict(X)
+
+    # find unique prediction values 
+    n_distinct_predictions = int(np.unique(y_pred).size)
+
+    # training_loss
+    train_mse = float(np.mean((y - y_pred)**2))
+
+    return {
+        'model' : model,
+        'n_distinct_predictions': n_distinct_predictions,
+        'train_mse' : train_mse
+    }
 
 # Step 12 - tree_rules (not yet solved)
 # TODO: implement
